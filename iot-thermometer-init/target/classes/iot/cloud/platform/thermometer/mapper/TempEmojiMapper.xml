@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="iot.cloud.platform.thermometer.mapper.TempEmojiMapper">
+    <select id="getFaceByTemp" resultType="string">
+        SELECT e.face
+        FROM tempemoji t
+        INNER JOIN emoji e ON t.emoji_name = e.name COLLATE utf8mb4_general_ci
+        WHERE
+        <![CDATA[
+            (t.mint IS NOT NULL AND t.maxt IS NOT NULL AND #{temp} >= t.mint AND #{temp} < t.maxt)
+            OR
+            (t.mint IS NULL AND t.maxt IS NOT NULL AND #{temp} < t.maxt)
+            OR
+            (t.maxt IS NULL AND t.mint IS NOT NULL AND #{temp} > t.mint)
+        ]]>
+        LIMIT 1
+    </select>
+</mapper>
